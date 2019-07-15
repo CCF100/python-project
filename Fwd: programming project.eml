@@ -1,0 +1,321 @@
+Delivered-To: foley2431@gmail.com
+Received: by 2002:a17:90a:62c9:0:0:0:0 with SMTP id k9csp2454751pjs;
+        Thu, 27 Jun 2019 12:38:59 -0700 (PDT)
+X-Received: by 2002:a5d:8c81:: with SMTP id g1mr6741349ion.239.1561664339657;
+        Thu, 27 Jun 2019 12:38:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1561664339; cv=none;
+        d=google.com; s=arc-20160816;
+        b=xwzygQkNBl4RrUe3SLUOiKF7PZxhy8sP1WgDrmfbrfYM84V5UEaqNbp3NmvKeJzMwj
+         /T4ylHAy4x6+qe5E78c+Db+WyrCNwo7MLZgGUm16SXrO4lQRDV2hE2oRep34VzGbywbp
+         S3vYW2tvMRj2sBT4L+grmerBo4J4HO7bu3fBrCth8xDwgVMFcDWKgEDmJqMTSDcti6Zt
+         TSiKIQtoLWeoB0w6TC+Xnxx+N3qxBaGStsJ217Atz9mbwF5gy7pQV5ZIlTbFfclgc5pt
+         bPjqQgr+aLcVpzKRlNNkz1jOlQrhu+Zxkhv1AFBPHrV4ofO7Lrwkp5by0HRj2z9AX+qE
+         z68Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=nYbTDDD7FDOcAyeQOYg4aeTL1X63lWkIu4z5s6n/X8M=;
+        b=BdTBGL/9qyt1R2BsTWA/mSyXmYOWajowJVGQv9paSMx3pmpM3FpYdtQLFSi8vFVBjN
+         OTA6E6C5DQKxPgrWwAzDD21CoAJtlbVY08b6W4Sy0XU7Oj281/Yufi/DVt0xOVaPAqLd
+         ASYBVOIvzEFHw8OYouCGmEcEEAYyFxcXuzjVJG9DH6GZrju6ezCjhoVsPZX0pbVn8PGE
+         wTe2dLrWxw9h6wuTx+KDuXFRuaDy05+naA++h6p6XQSbZDP+Vu7AFKGgF2gBzq9spB67
+         R449QrBQsLbKy8zB2XTjVzrfZyHRpTgEmwjvzbOwlNiqikMLnSmw+9O3k7UOWr1PFgtH
+         YtCw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@pediatrictlc-com.20150623.gappssmtp.com header.s=20150623 header.b=RWAkpuKx;
+       spf=pass (google.com: domain of allison@pediatrictlc.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=allison@pediatrictlc.com
+Return-Path: <allison@pediatrictlc.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id h73sor2480973iof.22.2019.06.27.12.38.59
+        for <foley2431@gmail.com>
+        (Google Transport Security);
+        Thu, 27 Jun 2019 12:38:59 -0700 (PDT)
+Received-SPF: pass (google.com: domain of allison@pediatrictlc.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@pediatrictlc-com.20150623.gappssmtp.com header.s=20150623 header.b=RWAkpuKx;
+       spf=pass (google.com: domain of allison@pediatrictlc.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=allison@pediatrictlc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pediatrictlc-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=nYbTDDD7FDOcAyeQOYg4aeTL1X63lWkIu4z5s6n/X8M=;
+        b=RWAkpuKxnJg6AohdfEJv/tzlDQOwcq0wZECjd1hFreSIf+60mbeCCKkxqotM9Lg+sE
+         VWYxDCr7091xAXadjxloW/QWmoD3GOU4Tu4heSfooObaiicb7aYmY6dlXVjSCdJEsDxd
+         4mr/idEDnQIY1qppCnDDpSpaiA08Me7aIjU4CBIRWMVRH25vWWGYjo3j/kRslTKqSphs
+         imdHq0vum0BeC+C9Yt8gqJoL51wHCf8hggArH1oHgdToH9eYA2jQB0DG7FTW7zMutalA
+         UVn/l3B4rR6dOGKbmqo7BXz2mbjl74dEDpEC/9yU4TaY3I40T94EC8CYvHwzr/7r1kEI
+         Z5EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=nYbTDDD7FDOcAyeQOYg4aeTL1X63lWkIu4z5s6n/X8M=;
+        b=dk44IpPiycZmUEXFojs8OUTzsG8QOkHUCD6O+osQaBrUCYRO81FkosO+YWH2ArqgMg
+         QVSV9kqBr73jeEIC1wLaYPEU9XYs3MIr29B7VRJFUe6A6mUiH48OyekwGvrsL4EI68A8
+         cvGO8Pnp5dqiBXMOLofRRZsmikX5XkymHI7S9JuSGxaNT7afgS2IzlcWKI+Qsr6Py4dP
+         XU5ftImgffmaE3pE26UP8Kp3/QUK7xjjjhxo1DnCThFqiez2qtp65mSWvmH0kdOqq5kO
+         Z3yf2LZdmNyJobmlQBZRu50yNH25WoPHoXO0tZBJ+zw3lvOztD0S2i2v4D9APx48wWZh
+         PL6A==
+X-Gm-Message-State: APjAAAVQ8Du7W67tJzbWI4CEGdZbTiifWElaj6X90wzWIW+SgV03Sw1w
+	lDVmGKaNgxECarZphrJ8BjA1nSFD4iDlB6FqsBa91Fwy
+X-Google-Smtp-Source: APXvYqwBIap+WFhQUS6PQI4MjFopvdAdUzZTvgT6LsgOFDvc7GvdJiPZMbjWw/nw0MMc8+pVW8ODUXrfuDgx7nYKMPs=
+X-Received: by 2002:a6b:6f0e:: with SMTP id k14mr6492400ioc.257.1561664338861;
+ Thu, 27 Jun 2019 12:38:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKC1GZMw27BuUN8oXwD2TvbOH3BW4EfDnz_ATZrX1phXk6Z0yg@mail.gmail.com>
+ <BD8BCA5E-FACB-45F8-8AF7-94EEF2371B19@pediatrictlc.com> <CAKC1GZMJMe92ftWbG1cpOyzOvZPmYkG6BtwYz2XWOvzM7_SH6A@mail.gmail.com>
+In-Reply-To: <CAKC1GZMJMe92ftWbG1cpOyzOvZPmYkG6BtwYz2XWOvzM7_SH6A@mail.gmail.com>
+From: Allison LeBouef <allison@pediatrictlc.com>
+Date: Thu, 27 Jun 2019 14:38:46 -0500
+Message-ID: <CAEuKE+65LdbHaTHnXVXb5ZK6XLsHQgqxT1QSdQh=Zm2m6dDqNA@mail.gmail.com>
+Subject: Fwd: programming project
+To: foley2431@gmail.com
+Content-Type: multipart/alternative; boundary="0000000000002d3380058c535034"
+
+--0000000000002d3380058c535034
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+---------- Forwarded message ---------
+From: Andy LeGoullon <andylegoullon@gmail.com>
+Date: Thu, Jun 20, 2019 at 12:14 AM
+Subject: Re: programming project
+To: Allison LeBouef <allison@pediatrictlc.com>
+
+
+Here's the MadLibs project I give to my students. If Caleb wants to do this
+project, have him do as much as he can on his own and then he can email me
+with questions when he gets stuck. If he'd rather do some other project
+that he thinks up, I could help him with that too.
+
+Andy
+
+Programming Project: MadLibs
+
+
+   1.
+
+   Write a MadLibs story containing 10 or so prompts (words you will ask
+   the user to enter, for example a noun, a country, a snack food, etc). Th=
+e
+   story can be about anything you want: How to catch a fish, how to bake a
+   cake, what happens during a trip to Disney World, etc.
+   2.
+
+   Make a file called madlibs.py. This file will contain all the python
+   code to play your Madlibs. Add code to this file that does the following=
+:
+   1.
+
+      Asks the first prompt, for example, "Enter the name of a vegetable"
+      2.
+
+      Store the user's entered word in a variable.
+      3.
+
+      Repeat these two tasks for all the remaining prompts.
+      4.
+
+      Print out the completed MadLibs story, replacing the prompts with the
+      words stored in the variables.
+      3.
+
+   Run your program and make sure it works correctly.
+
+
+
+On Fri, Jun 14, 2019 at 9:48 AM Allison LeBouef <allison@pediatrictlc.com>
+wrote:
+
+> I love Madlibs! I like the idea of getting him to formulate the questions
+> he needs to ask too. Let=E2=80=99s try it and see what happens! Thanks so=
+ much for
+> helping me with this
+> Allison
+>
+> Sent from my iPhone
+>
+> > On Jun 14, 2019, at 8:55 AM, Andy LeGoullon <andylegoullon@gmail.com>
+> wrote:
+> >
+> > Are you familiar with Madlibs? I was thinking of having Caleb make a
+> computer program version of Madlibs as his first project. It's more of an
+> intermediate level project, but not impossible for someone starting out a=
+nd
+> it sounds like he's looking for a challenge. I can give you the project
+> details if you think this would work out.
+> >
+> > He would definitely need some assistance on it at times, but it would
+> give him good experience asking for help. I could help him out via
+> email/phone. Or I can come in if he is getting very frustrated. Anna know=
+s
+> Python and may also be willing to help.
+> >
+> > Andy
+>
+
+
+--=20
+Allison LeBouef, LOTR/ OT supervisor
+Pediatric Therapy and Learning Center, LLC
+108 Energy Pkwy
+Lafayette, LA  70508
+(337)504-4244
+fax (337)706-7612
+www.pediatrictlc.com
+
+*Important Confidentiality Information:*
+
+The information contained in this transmission may contain privileged and
+confidential information, including patient information protected by
+federal and state privacy laws. It is intended only for the use of the
+person(s) named above. If you are not the intended recipient, any review,
+dissemination, distribution, or duplication of this communication is
+strictly prohibited. If you are not the intended recipient, please contact
+the sender by calling 337-504-4244 <(337)%20504-4244>.  Feel free to leave
+a voice message stating the sender and the subject line. Please destroy all
+copies of the original message.
+
+Clients: Please note that this is not an encrypted email which means that
+the e-mail and any information it contains could be unknowingly
+intercepted.  Please consider this in all future correspondence.
+
+--0000000000002d3380058c535034
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><br><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">---------- Forwarded message ---------<br>From: <strong cla=
+ss=3D"gmail_sendername" dir=3D"auto">Andy LeGoullon</strong> <span dir=3D"a=
+uto">&lt;<a href=3D"mailto:andylegoullon@gmail.com">andylegoullon@gmail.com=
+</a>&gt;</span><br>Date: Thu, Jun 20, 2019 at 12:14 AM<br>Subject: Re: prog=
+ramming project<br>To: Allison LeBouef &lt;<a href=3D"mailto:allison@pediat=
+rictlc.com">allison@pediatrictlc.com</a>&gt;<br></div><br><br><div dir=3D"l=
+tr">Here&#39;s the MadLibs project I give to my students. If Caleb wants to=
+ do this project, have him do as much as he can on his own and then he can =
+email me with questions when he gets stuck. If he&#39;d rather do some othe=
+r project that he thinks up, I could help him with that too.=C2=A0<div><br>=
+</div><div>Andy</div><div><br></div><div><span id=3D"m_-3611317769460724002=
+gmail-docs-internal-guid-61d5ccb3-7fff-4947-19e4-7ad848c11bb7"><p dir=3D"lt=
+r" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt;text-align:ce=
+nter"><span style=3D"font-size:11pt;font-family:Arial;color:rgb(0,0,0);back=
+ground-color:transparent;font-weight:700;font-variant-numeric:normal;font-v=
+ariant-east-asian:normal;vertical-align:baseline;white-space:pre-wrap">Prog=
+ramming Project: MadLibs</span></p><br><ol style=3D"margin-top:0pt;margin-b=
+ottom:0pt"><li dir=3D"ltr" style=3D"list-style-type:decimal;font-size:10pt;=
+font-family:Arial;color:rgb(0,0,0);background-color:transparent;font-varian=
+t-numeric:normal;font-variant-east-asian:normal;vertical-align:baseline;whi=
+te-space:pre-wrap"><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;=
+margin-bottom:0pt"><span style=3D"font-size:10pt;background-color:transpare=
+nt;font-variant-numeric:normal;font-variant-east-asian:normal;vertical-alig=
+n:baseline;white-space:pre-wrap">Write a MadLibs story containing 10 or so =
+prompts (words you will ask the user to enter, for example a noun, a countr=
+y, a snack food, etc). The story can be about anything you want: How to cat=
+ch a fish, how to bake a cake, what happens during a trip to Disney World, =
+etc.</span></p></li><li dir=3D"ltr" style=3D"list-style-type:decimal;font-s=
+ize:10pt;font-family:Arial;color:rgb(0,0,0);background-color:transparent;fo=
+nt-variant-numeric:normal;font-variant-east-asian:normal;vertical-align:bas=
+eline;white-space:pre-wrap"><p dir=3D"ltr" style=3D"line-height:1.38;margin=
+-top:0pt;margin-bottom:0pt"><span style=3D"font-size:10pt;background-color:=
+transparent;font-variant-numeric:normal;font-variant-east-asian:normal;vert=
+ical-align:baseline;white-space:pre-wrap">Make a file called </span><span s=
+tyle=3D"font-size:10pt;background-color:transparent;font-weight:700;font-va=
+riant-numeric:normal;font-variant-east-asian:normal;vertical-align:baseline=
+;white-space:pre-wrap">madlibs.py</span><span style=3D"font-size:10pt;backg=
+round-color:transparent;font-variant-numeric:normal;font-variant-east-asian=
+:normal;vertical-align:baseline;white-space:pre-wrap">. This file will cont=
+ain all the python code to play your Madlibs. Add code to this file that do=
+es the following:</span></p></li><ol style=3D"margin-top:0pt;margin-bottom:=
+0pt"><li dir=3D"ltr" style=3D"list-style-type:lower-alpha;font-size:10pt;fo=
+nt-family:Arial;color:rgb(0,0,0);background-color:transparent;font-variant-=
+numeric:normal;font-variant-east-asian:normal;vertical-align:baseline;white=
+-space:pre-wrap"><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;ma=
+rgin-bottom:0pt"><span style=3D"font-size:10pt;background-color:transparent=
+;font-variant-numeric:normal;font-variant-east-asian:normal;vertical-align:=
+baseline;white-space:pre-wrap">Asks the first prompt, for example, &quot;En=
+ter the name of a vegetable&quot;</span></p></li><li dir=3D"ltr" style=3D"l=
+ist-style-type:lower-alpha;font-size:10pt;font-family:Arial;color:rgb(0,0,0=
+);background-color:transparent;font-variant-numeric:normal;font-variant-eas=
+t-asian:normal;vertical-align:baseline;white-space:pre-wrap"><p dir=3D"ltr"=
+ style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"><span style=3D=
+"font-size:10pt;background-color:transparent;font-variant-numeric:normal;fo=
+nt-variant-east-asian:normal;vertical-align:baseline;white-space:pre-wrap">=
+Store the user&#39;s entered word in a variable.</span></p></li><li dir=3D"=
+ltr" style=3D"list-style-type:lower-alpha;font-size:10pt;font-family:Arial;=
+color:rgb(0,0,0);background-color:transparent;font-variant-numeric:normal;f=
+ont-variant-east-asian:normal;vertical-align:baseline;white-space:pre-wrap"=
+><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margin-bottom:0pt"=
+><span style=3D"font-size:10pt;background-color:transparent;font-variant-nu=
+meric:normal;font-variant-east-asian:normal;vertical-align:baseline;white-s=
+pace:pre-wrap">Repeat these two tasks for all the remaining prompts.</span>=
+</p></li><li dir=3D"ltr" style=3D"list-style-type:lower-alpha;font-size:10p=
+t;font-family:Arial;color:rgb(0,0,0);background-color:transparent;font-vari=
+ant-numeric:normal;font-variant-east-asian:normal;vertical-align:baseline;w=
+hite-space:pre-wrap"><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0p=
+t;margin-bottom:0pt"><span style=3D"font-size:10pt;background-color:transpa=
+rent;font-variant-numeric:normal;font-variant-east-asian:normal;vertical-al=
+ign:baseline;white-space:pre-wrap">Print out the completed MadLibs story, r=
+eplacing the prompts with the words stored in the variables.</span></p></li=
+></ol><li dir=3D"ltr" style=3D"list-style-type:decimal;font-size:10pt;font-=
+family:Arial;color:rgb(0,0,0);background-color:transparent;font-variant-num=
+eric:normal;font-variant-east-asian:normal;vertical-align:baseline;white-sp=
+ace:pre-wrap"><p dir=3D"ltr" style=3D"line-height:1.38;margin-top:0pt;margi=
+n-bottom:0pt"><span style=3D"font-size:10pt;background-color:transparent;fo=
+nt-variant-numeric:normal;font-variant-east-asian:normal;vertical-align:bas=
+eline;white-space:pre-wrap">Run your program and make sure it works correct=
+ly.</span></p></li></ol></span></div><div><br></div></div><br><div class=3D=
+"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jun 14, 2019 at=
+ 9:48 AM Allison LeBouef &lt;<a href=3D"mailto:allison@pediatrictlc.com" ta=
+rget=3D"_blank">allison@pediatrictlc.com</a>&gt; wrote:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex">I love Madlibs! I like the idea of =
+getting him to formulate the questions he needs to ask too. Let=E2=80=99s t=
+ry it and see what happens! Thanks so much for helping me with this<br>
+Allison<br>
+<br>
+Sent from my iPhone<br>
+<br>
+&gt; On Jun 14, 2019, at 8:55 AM, Andy LeGoullon &lt;<a href=3D"mailto:andy=
+legoullon@gmail.com" target=3D"_blank">andylegoullon@gmail.com</a>&gt; wrot=
+e:<br>
+&gt; <br>
+&gt; Are you familiar with Madlibs? I was thinking of having Caleb make a c=
+omputer program version of Madlibs as his first project. It&#39;s more of a=
+n intermediate level project, but not impossible for someone starting out a=
+nd it sounds like he&#39;s looking for a challenge. I can give you the proj=
+ect details if you think this would work out.<br>
+&gt; <br>
+&gt; He would definitely need some assistance on it at times, but it would =
+give him good experience asking for help. I could help him out via email/ph=
+one. Or I can come in if he is getting very frustrated. Anna knows Python a=
+nd may also be willing to help. <br>
+&gt; <br>
+&gt; Andy<br>
+</blockquote></div>
+</div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr" class=3D"gma=
+il_signature" data-smartmail=3D"gmail_signature"><div dir=3D"ltr"><div><div=
+ dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div><span style=3D"font-siz=
+e:12.8px">Allison LeBouef, LOTR/ OT supervisor</span><br></div>
+<div>Pediatric Therapy and Learning Center, LLC</div>
+<div>108 Energy Pkwy</div>
+<div>Lafayette, LA=C2=A0 70508</div><div>(337)504-4244</div><div>fax (337)7=
+06-7612</div><div><a href=3D"http://www.pediatrictlc.com" target=3D"_blank"=
+>www.pediatrictlc.com</a></div><div><br></div><div><p style=3D"font-family:=
+arial,&quot;san serif&quot;;font-size:12.8px"><strong>Important Confidentia=
+lity Information:</strong></p><p style=3D"font-family:arial,&quot;san serif=
+&quot;;font-size:12.8px">The information contained in this transmission may=
+ contain privileged and confidential information, including patient informa=
+tion protected by federal and state privacy laws. It is intended only for t=
+he use of the person(s) named above. If you are not the intended recipient,=
+ any review, dissemination, distribution, or duplication of this communicat=
+ion is strictly prohibited. If you are not the intended recipient, please c=
+ontact the sender by calling=C2=A0<a href=3D"tel:(337)%20504-4244" value=3D=
+"+13375044244" style=3D"color:rgb(17,85,204)" target=3D"_blank">337-504-424=
+4</a>.=C2=A0 Feel free to leave a voice message stating the sender and the =
+subject line. Please destroy all copies of the original message.</p><p styl=
+e=3D"font-family:arial,&quot;san serif&quot;;font-size:12.8px">Clients: Ple=
+ase note that this is not an encrypted email which means that the e-mail an=
+d any information it contains could be unknowingly intercepted.=C2=A0 Pleas=
+e consider this in all future correspondence.=C2=A0</p></div></div></div></=
+div></div></div></div></div>
+
+--0000000000002d3380058c535034--
