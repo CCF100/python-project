@@ -45,7 +45,7 @@ if args.setup == True:
 if platform.system() == 'Linux':
 	print('Linux master race! XD')
 # Introduce yourself
-print (colored("<<madlibs.", 'red')+colored("p", 'yellow')+colored("y", 'blue'), colored("- Written by Caleb Fontenot>>", 'red'), '\n' "Built on July 13, 2019")
+print (colored("<<madlibs.", 'red')+colored("p", 'yellow')+colored("y", 'blue'), colored("- Written by Caleb Fontenot>>", 'red'), '\n' "Project started on July 13, 2019")
 print("I pull txt files in the directory you place me in for stories!" '\n' '\n' "Run me with the --setup flag for instructions on setting a story up!" '\n')
 
 # Notify if verbose
@@ -76,8 +76,21 @@ storyContent = f.readline()
 # Hacky shenanigans
 #selectedStoryName = storyName[story - 1]
 
-# Print current story
+# Print current story title
 print("Current story title is", '"'+storyName+'"')
-re.findall(
 
-print(storyContent)
+# Alright, now onto the tricky part. We need to filter out all of the bracketed words in stories.txt, putting them into a list, replacing them with incremental strings. We also need to count how many there are for later.
+# Pull all of the items with the <> brackets
+filtered = re.findall(r'<.*?>', storyContent)
+filteredReplaced = re.sub(r'<.*?>', storyContent)
+# We got them!
+print(filtered)
+# Now we need to count them
+replacedNumber = len(filtered)
+print(replacedNumber)
+
+
+
+
+
+
