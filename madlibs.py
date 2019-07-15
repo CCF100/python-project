@@ -29,7 +29,7 @@ StoryCount = str(args.story)
 
 #if statements for ArgSparce
 
-# line 35 fails if args.story reads as "None", so we need to clear that string if it reads as such.
+# line 36 fails if args.story reads as "None", so we need to clear that string if it reads as such.
 if args.story == None:
 	exec('args.story = int(0)')
 # args.story should now read as 0
