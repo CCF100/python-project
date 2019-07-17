@@ -15,7 +15,7 @@ time.sleep(1)
 
 # prints phrase letters
 for number in range(amount):
-	print(number, phrase[number])
+	print(number, phrase[number], end='\r')
 	time.sleep(0.1)
 
 # prints phrase letters in random order
@@ -24,5 +24,5 @@ print("Now, in random order!")
 time.sleep(1)
 for number in range(amount):
 	exec('iteration = random.randint(0,amount - 1)')	
-	print(number, phrase[iteration], '\n' "iteration", iteration)
+	print(number, phrase[iteration], "iteration", iteration, end='\r')
 	time.sleep(0.1)
