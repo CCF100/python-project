@@ -4,12 +4,15 @@ debug = 1
 
 # Import the libraries we will use
 from datetime import datetime
+import pyttsx
 import re
 import sys
 import random
 import platform
 import argparse
 import os
+# init tts
+engine = pyttsx.init()
 # check to see if termcolor is installed, we need it for color to work
 try:
 	from termcolor import colored
@@ -133,6 +136,9 @@ generatedStory = generatedStory.join(storyContentList)
 #generatedStoryColored = generatedStoryColored.join(storyContentListColored)
 #print(generatedStoryColored)
 print(generatedStory)
+# say the tts
+engine.say('generatedStory')
+engine.run()
 #print(exec(generatedStoryColored))
 #exit()
 #Alright! We're done! Let's save the story to a file
