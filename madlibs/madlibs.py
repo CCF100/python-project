@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Toggle me for debugging
 debug = 1
 
