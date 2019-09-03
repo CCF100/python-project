@@ -70,24 +70,30 @@ print("Detected", IntStoryCount, "stories")
 # Randomly pick what story we will use
 story = random.randint(1, IntStoryCount)
 
+#Declare vars
+storyContentStr = []
+storyNameStr = []
 # Alright, let's get the data from stories.txt
 i = 1
 f = open('stories.txt', 'r')
 for line in f.readlines():
 	if i % 2 == 0 :
 		storyContent = line
+		storyContentStr.append(storyContent)	
 	else:
 		storyName = line
+		storyNameStr.append(storyName)
 	i+=1
 f.close()
+print(storyNameStr)
 # Print current story title, but remove the brackets first
-filteredTitle = re.findall(r'<(.*?)>', storyName)
+filteredTitle = re.findall(r'<(.*?)>', storyNameStr[story-1])
+
 # print the first result
 print("Current story title is", '"'+filteredTitle[0]+'"','\n')
-
 # Alright, now onto the tricky part. We need to filter out all of the bracketed words in stories.txt, putting them into a list, replacing them with incremental strings. We also need to count how many there are for later.
 # Pull all of the items with the <> brackets
-filtered = re.findall(r'<(.*?)>', storyContent)
+filtered = re.findall(r'<(.*?)>', storyContentStr[story-1])
 # We got them!
 if debug == 1:
 	print(filtered, '\n')
@@ -110,7 +116,7 @@ print(replaceList)
 print("Replacing Words...")
 
 # Split the Story Content into a list
-storyContentList = re.split(r'<.*?>', storyContent)
+storyContentList = re.split(r'<.*?>', storyContentStr[story-1])
 # Count the items in the list
 storyContentCount = len(storyContentList)
 x = 0
@@ -121,22 +127,12 @@ for loopCount in range(storyContentCount):
 # To get colored words for our output, we need to add the appropiate commands to our variable.
 storyContentListColored = re.split(r'<.*?>', storyContent)
 x = 0
-#for loopCount in range(storyContentCount):
-#	#print(storyContentList[loopCount])
-#	storyContentListColored[x-1] = '\"'+re.escape(storyContentListColored[x-1])+'\"'
-#	storyContentListColored.insert(x, "colored(\'"+replaceList[loopCount]+"\', '"\'+blue+"\""),")
-#	x = x+2
-#print(storyContentListColored)
-#print('\n')
+
 # Merge lists into a string
 generatedStory = ""
 generatedStory = generatedStory.join(storyContentList)
-# for the colored printout...
-#generatedStoryColored = ""
-#generatedStoryColored = generatedStoryColored.join(storyContentListColored)
-#print(generatedStoryColored)
+
 print(generatedStory)
-#print(exec(generatedStoryColored))
 #exit()
 #Alright! We're done! Let's save the story to a file
 now = datetime.now()
@@ -147,9 +143,9 @@ else:
 	os.system("mkdir \"saved stories\"")
 
 currentDate = now.strftime("%d-%m-%Y-%H:%M:%S")
-saveFile = 'saved stories/generatedStory-'+currentDate+'.txt'
+saveFile = 'saved stories/generatedStory-'+currentDate
 print("Saving story to .txt file")
-file = open(saveFile, 'w+')
+file = open(saveFile+'.txt', 'w+')
 
 line_offset = []
 offset = 0
@@ -167,7 +163,7 @@ file.close()
 print('\n'+"Processing Text-To-Speech, please wait..."+'\n')
 tts = gTTS(text=generatedStory, lang='en')
 tts.save("TTS.mp3")
-#os.system("play TTS.mp3")
-os.system("cp TTS.mp3 \"saved stories\\"")
+os.system("play TTS.mp3")
+os.system("mv TTS.mp3 "+saveFile+".mp3\"")
 
 
