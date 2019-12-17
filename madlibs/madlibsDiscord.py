@@ -18,7 +18,6 @@ async def gameLoop():
 	await client.change_presence(activity=discord.Game(name='madlibs.py'))
 	# Introduce yourself
 	channel = client.get_channel(656233549837631508)
-	print(discord.user)
 	await channel.send("**<<madlibsDiscord.py - Written by Caleb Fontenot>>**") 
 	await channel.send("Initial project started on **July 13, 2019**")
 	await channel.send("Discord Bot started on **December 16, 2019**")
@@ -146,16 +145,17 @@ class MyClient(discord.Client):
 	async def on_message(self, message, pass_context=True):
 		if message.content == 'mad!start':
 			channel = client.get_channel(656233549837631508)			
-			loop = asyncio.get_event_loop()
-			#await channel.send("Event Loop is currently: "+str(loop))
-			loop.run_until_complete(gameLoop())
+			await gameLoop()
 			await channel.send("Done!")
 #Run main Game loop
 
+# The Discord bot ID isn't stored in this script for security reasons, so we have to go get it
+f = open('botID.txt', 'r')
+BotID = f.read()
 
 # Connect Bot To Discord and start running
 client = MyClient()
-client.run('')
+client.run(BotID)
 exit()
 
 
