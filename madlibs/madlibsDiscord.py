@@ -12,30 +12,26 @@ import random
 import os
 import asyncio
 
+
 async def gameLoop():
-
-# convert the integer to a string because pickiness
-	StoryCount = str(args.story)
-
-	#if statements for ArgSparce
-	
-	# line 36 fails if args.story reads as "None", so we need to clear that string if it reads as such.
-	if args.story == None:
-		exec('args.story = int(0)')
+	# Set bot presence
+	await client.change_presence(activity=discord.Game(name='madlibs.py'))
 	# Introduce yourself
-	await channel.send("<<madlibsDiscord.py - Written by Caleb Fontenot>>") 
-	await channel.send("Initial project started on July 13, 2019")
-	await channel.send("Discord Bot started on December 16, 2019")
+	channel = client.get_channel(656233549837631508)
+	print(discord.user)
+	await channel.send("**<<madlibsDiscord.py - Written by Caleb Fontenot>>**") 
+	await channel.send("Initial project started on **July 13, 2019**")
+	await channel.send("Discord Bot started on **December 16, 2019**")
 	# Notify if verbose
 	if debug == 1:
 		await channel.send("Debug mode is enabled! Being verbose!")
 	# Now on to business!
-	exit()
 	# Load files
-	f = open('storyCount.txt', 'r')
-	StoryCount = f.read()
-	IntStoryCount = int(StoryCount)
-	await channel.send("Detected "+IntStoryCount+" stories")
+	async with channel.typing():	
+		f = open('storyCount.txt', 'r')
+		StoryCount = f.read()
+		IntStoryCount = int(StoryCount)
+		await channel.send("Detected "+str(IntStoryCount)+" stories")
 	# Randomly pick what story we will use
 	story = random.randint(1, IntStoryCount)
 	
@@ -54,18 +50,18 @@ async def gameLoop():
 			storyNameStr.append(storyName)
 		i+=1
 	f.close()
-	print(storyNameStr)
+	await channel.send(storyNameStr)
 	# Print current story title, but remove the brackets first
 	filteredTitle = re.findall(r'<(.*?)>', storyNameStr[story-1])
 		
 	# print the first result
-	print("Current story title is", '"'+filteredTitle[0]+'"','\n')
+	await channel.send("Current story title is "+'"'+str(filteredTitle[0])+'"'+'\n')
 # Alright, now onto the tricky part. We need to filter out all of the bracketed words in stories.txt, putting them into a list, replacing them with incremental strings. We also need to count how many there 	are for later.
 # Pull all of the items with the <> brackets
 	filtered = re.findall(r'<(.*?)>', storyContentStr[story-1])
 	# We got them!
 	if debug == 1:
-		print(filtered, '\n')
+		await channel.send(str(filtered))
 	# Now we need to count them
 	replacedNumber = len(filtered)
 	
@@ -74,15 +70,19 @@ async def gameLoop():
 	replaceList = []
 	#replaceList =['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', 	'17', '18', '19', '20', '21', '22', '23', '24']
 	replaceList.append("")
-	print("Type a noun, verb, adjective, or adverb depending on what it asks you, followed by enter.", '\n')
+	await channel.send(str("Type a noun, verb, adjective, or adverb depending on what it asks you, followed by enter."))
 	
 	for loopCount in range(replacedNumber):
-		replaceVar = input("Give me a(n) "+colored(filtered[loopCount], 'blue')+": ")
+		#Wait for user to reply
+		await channel.send("Give me a(n) "+"**"+str(filtered[loopCount])+"**"+": ")	
+		raw_message = await client.wait_for('message')
+		replaceVar = raw_message.content
+		print("You gave me: "+replaceVar)
 		replaceList.append(replaceVar)
 	print(replaceList)
 # Run a loop to replace the words
 
-	print("Replacing Words...")
+	await channel.send("Replacing Words...")
 	
 	# Split the Story Content into a list
 	storyContentList = re.split(r'<.*?>', storyContentStr[story-1])
@@ -94,49 +94,62 @@ async def gameLoop():
 		storyContentList.insert(x, replaceList[loopCount])
 		x = x+2
 	# To get colored words for our output, we need to add the appropiate commands to our variable.
-	storyContentListColored = re.split(r'<.*?>', storyContent)
 	x = 0
 
 	# Merge lists into a string
 	generatedStory = ""
 	generatedStory = generatedStory.join(storyContentList)
-
-	print(generatedStory)
+# Send Story to Discord
+	await channel.send(generatedStory)
 	#exit()
 	#Alright! We're done! Let's save the story to a file
 	now = datetime.now()
-
+	currentDate = now.strftime("%d-%m-%Y-%H:%M:%S")
+	saveFile = 'saved stories/generatedStory-'+currentDate
 	if os.path.exists("saved stories"):
 		pass
 	else:
 		os.system("mkdir \"saved stories\"")
-		currentDate = now.strftime("%d-%m-%Y-%H:%M:%S")
-		saveFile = 'saved stories/generatedStory-'+currentDate
+
 	print("Saving story to .txt file")
-	file = open(saveFile+'.txt', 'w+')
-		
-	line_offset = []
-	offset = 0
-	for line in file:
-		line_offset.append(offset)
-		offset += len(line)
+	await channel.send("Saving story to .txt file")
+	async with channel.typing():
+		file = open(saveFile+'.txt', 'w+')	
+
+		line_offset = []
+		offset = 0
+
+		for line in file:
+			line_offset.append(offset)
+			offset += len(line)
 		file.seek(0)
 		file.write(filteredTitle[0]+'\n'+'\n')
 		file.write(generatedStory)
 		file.write('\n'+"Generated by Caleb Fontenot\'s madlibs.py")
 		file.close()
+	#Send generated txt file to Discord
+	await channel.send("Sending .txt file...")
+	discordFile = discord.File(saveFile+'.txt', filename="generatedStory.txt")
+	await channel.send(file=discordFile)
+
+
 #Setup Discord functions and announce on discord that we are ready
+
 class MyClient(discord.Client):
+
 	async def on_ready(self):
 		print('Logged on as', self.user)
 		channel = client.get_channel(656233549837631508)
 		await channel.send("madlibs.py - Discord Edition has successfully connected!")
 		await channel.send("Run `mad!start` to start a a game")
 		print("Ready!")		
-	async def on_message(self, message):
+	async def on_message(self, message, pass_context=True):
 		if message.content == 'mad!start':
-			await asyncio.set_event_loop(gameLoop())
-
+			channel = client.get_channel(656233549837631508)			
+			loop = asyncio.get_event_loop()
+			#await channel.send("Event Loop is currently: "+str(loop))
+			loop.run_until_complete(gameLoop())
+			await channel.send("Done!")
 #Run main Game loop
 
 
