@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # Toggle me for debugging
 debug = 1
-
+# Displays warning message
+testing = 0
 # Import the libraries we will use
+#from mega import Mega
 from datetime import datetime
 from gtts import gTTS
 import discord
@@ -11,142 +13,200 @@ import sys
 import random
 import os
 import asyncio
-
+import ffmpeg
+#import talkey
 
 async def gameLoop():
-	# Set bot presence
-	await client.change_presence(activity=discord.Game(name='madlibs.py'))
-	# Introduce yourself
-	channel = client.get_channel(656233549837631508)
-	await channel.send("**<<madlibsDiscord.py - Written by Caleb Fontenot>>**") 
-	await channel.send("Initial project started on **July 13, 2019**")
-	await channel.send("Discord Bot started on **December 16, 2019**")
-	# Notify if verbose
-	if debug == 1:
-		await channel.send("Debug mode is enabled! Being verbose!")
-	# Now on to business!
-	# Load files
-	async with channel.typing():	
-		f = open('storyCount.txt', 'r')
-		StoryCount = f.read()
-		IntStoryCount = int(StoryCount)
-		await channel.send("Detected "+str(IntStoryCount)+" stories")
-	# Randomly pick what story we will use
-	story = random.randint(1, IntStoryCount)
-	
-	#Declare vars
-	storyContentStr = []
-	storyNameStr = []
-	# Alright, let's get the data from stories.txt
-	i = 1
-	f = open('stories.txt', 'r')
-	for line in f.readlines():
-		if i % 2 == 0 :
-			storyContent = line
-			storyContentStr.append(storyContent)	
-		else:
-			storyName = line
-			storyNameStr.append(storyName)
-		i+=1
-	f.close()
-	await channel.send(storyNameStr)
-	# Print current story title, but remove the brackets first
-	filteredTitle = re.findall(r'<(.*?)>', storyNameStr[story-1])
-		
-	# print the first result
-	await channel.send("Current story title is "+'"'+str(filteredTitle[0])+'"'+'\n')
+    #Init tts, and connect voice to channel, hackily reinit connection if broken
+    voiceChannel = client.get_channel(682688245964079127)
+    voice = await voiceChannel.connect()
+    if voice.is_connected() == True:
+        await voice.disconnect()
+    voice = await voiceChannel.connect()
+    # Set bot presence
+    await client.change_presence(activity=discord.Game(name='madlibs.py'))
+    # Introduce yourself
+    channel = client.get_channel(656233549837631508)
+    await channel.send("**<<madlibsDiscord.py <:python:656239601723113472> - Written by Caleb Fontenot>>**") 
+    await channel.send("Initial project started on **July 13, 2019**")
+    await channel.send("Discord Bot started on **December 16, 2019**")
+    # Notify if verbose
+    if debug == 1:
+        await channel.send("Debug mode is enabled! Being verbose!")
+    # Now on to business!
+    # Load files
+    async with channel.typing():	
+        f = open('storyCount.txt', 'r')
+        StoryCount = f.read()
+        IntStoryCount = int(StoryCount)
+        await channel.send("Detected "+str(IntStoryCount)+" stories")
+    # Randomly pick what story we will use
+    story = random.randint(1, IntStoryCount)
+    
+    #Declare vars
+    storyContentStr = []
+    storyNameStr = []
+    # Alright, let's get the data from stories.txt
+    i = 1
+    f = open('stories.txt', 'r')
+    for line in f.readlines():
+        if i % 2 == 0 :
+            storyContent = line
+            storyContentStr.append(storyContent)	
+        else:
+            storyName = line
+            storyNameStr.append(storyName)
+        i+=1
+    f.close()
+    await channel.send(storyNameStr)
+    # Print current story title, but remove the brackets first
+    filteredTitle = re.findall(r'<(.*?)>', storyNameStr[story-1])
+        
+    # print the first result
+    await channel.send("Current story title is  "+'"'+str(filteredTitle[0])+'"'+'\n')
 # Alright, now onto the tricky part. We need to filter out all of the bracketed words in stories.txt, putting them into a list, replacing them with incremental strings. We also need to count how many there 	are for later.
 # Pull all of the items with the <> brackets
-	filtered = re.findall(r'<(.*?)>', storyContentStr[story-1])
-	# We got them!
-	if debug == 1:
-		await channel.send(str(filtered))
-	# Now we need to count them
-	replacedNumber = len(filtered)
-	
-	# Run a loop to get the words
-	
-	replaceList = []
-	#replaceList =['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', 	'17', '18', '19', '20', '21', '22', '23', '24']
-	replaceList.append("")
-	await channel.send(str("Type a noun, verb, adjective, or adverb depending on what it asks you, followed by enter."))
-	
-	for loopCount in range(replacedNumber):
-		#Wait for user to reply
-		await channel.send("Give me a(n) "+"**"+str(filtered[loopCount])+"**"+": ")	
-		raw_message = await client.wait_for('message')
-		replaceVar = raw_message.content
-		print("You gave me: "+replaceVar)
-		replaceList.append(replaceVar)
-	print(replaceList)
+    filtered = re.findall(r'<(.*?)>', storyContentStr[story-1])
+    # We got them!
+    if debug == 1:
+        await channel.send(str(filtered))
+    # Now we need to count them
+    replacedNumber = len(filtered)
+    
+    # Run a loop to get the words
+    
+    replaceList = []
+    #replaceList =['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', 	'17', '18', '19', '20', '21', '22', '23', '24']
+    replaceList.append("")
+    await channel.send(str("Type a noun, verb, adjective, or adverb depending on what it asks you, followed by enter."))
+    
+    for loopCount in range(replacedNumber):
+        #Wait for user to reply
+        await channel.send("Give me a(n) "+"**"+str(filtered[loopCount])+"**"+": ")	
+        # Push text to gTTS and save it to a file
+        tts = gTTS(text="Give me a(n) "+str(filtered[loopCount])+": ")
+        os.system("rm badCurrentTTS.mp3")
+        os.system("rm currentTTS.mp3")
+        tts.save("badCurrentTTS.mp3")
+       # gTTS is stupid and gives us a file that discord.py doesn't understand, so we have to convert it
+        (
+            ffmpeg
+            .input('badCurrentTTS.mp3')
+            .output('currentTTS.mp3', audio_bitrate=48000, format='wav', sample_fmt='s16', ac='2')
+            .run()
+        )
+        if voice.is_playing() == True:
+            print("Audio is playing! Stopping playback!"+'\n')
+            voice.stop()
+        print("Attempting to play audio"+'\n')
+        voice.play(discord.FFmpegPCMAudio("currentTTS.mp3"))
+        raw_message = await client.wait_for('message')
+        replaceVar = raw_message.content
+        print("You gave me: "+replaceVar)
+        replaceList.append(replaceVar)
+    print(replaceList)
 # Run a loop to replace the words
 
-	await channel.send("Replacing Words...")
-	
-	# Split the Story Content into a list
-	storyContentList = re.split(r'<.*?>', storyContentStr[story-1])
-	# Count the items in the list
-	storyContentCount = len(storyContentList)
-	x = 0
-	for loopCount in range(storyContentCount):
-		#print(storyContentList[loopCount])
-		storyContentList.insert(x, replaceList[loopCount])
-		x = x+2
-	# To get colored words for our output, we need to add the appropiate commands to our variable.
-	x = 0
+    await channel.send("Replacing Words...")
+    
+    # Split the Story Content into a list
+    storyContentList = re.split(r'<.*?>', storyContentStr[story-1])
+    # Count the items in the list
+    storyContentCount = len(storyContentList)
+    x = 0
+    for loopCount in range(storyContentCount):
+        #print(storyContentList[loopCount])
+        storyContentList.insert(x, replaceList[loopCount])
+        x = x+2
+    # To get colored words for our output, we need to add the appropiate commands to our variable.
+    x = 0
 
-	# Merge lists into a string
-	generatedStory = ""
-	generatedStory = generatedStory.join(storyContentList)
+    # Merge lists into a string
+    generatedStory = ""
+    generatedStory = generatedStory.join(storyContentList)
+# Determine file name for file output
+    now = datetime.now()
+    currentDate = now.strftime("%d-%m-%Y-%H:%M:%S")
+    saveFile = 'saved stories/generatedStory-'+currentDate
 # Send Story to Discord
-	await channel.send(generatedStory)
-	#exit()
-	#Alright! We're done! Let's save the story to a file
-	now = datetime.now()
-	currentDate = now.strftime("%d-%m-%Y-%H:%M:%S")
-	saveFile = 'saved stories/generatedStory-'+currentDate
-	if os.path.exists("saved stories"):
-		pass
-	else:
-		os.system("mkdir \"saved stories\"")
+    await channel.send(generatedStory)
+    await channel.send("Processing TTS, please wait!")
+    tts = gTTS(text=generatedStory+"This story was generated by Caleb Fontenot's MadLibs.py", lang='en')
+    os.system("rm badCurrentStory.mp3")
+    tts.save("badCurrentStory.mp3")
+    # gTTS is stupid and gives us a file that discord.py doesn't understand, so we have to convert it
+    (
+        ffmpeg
+        .input('badCurrentStory.mp3')
+        .output(saveFile+'.mp3', audio_bitrate=48000, format='wav', sample_fmt='s16', ac='2')
+        .run()
+    )
+    if voice.is_playing() == True:
+        print("Audio is playing! Stopping playback!"+'\n')
+        voice.stop()
+    print("Attempting to play audio"+'\n')
+    voice.play(discord.FFmpegPCMAudio(saveFile+".mp3"))
 
-	print("Saving story to .txt file")
-	await channel.send("Saving story to .txt file")
-	async with channel.typing():
-		file = open(saveFile+'.txt', 'w+')	
+    #exit()
+    #Alright! We're done! Let's save the story to a file
+    if os.path.exists("saved stories"):
+        pass
+    else:
+        os.system("mkdir \"saved stories\"")    
+    print("Saving story to .txt file")
+    await channel.send("Saving story to .txt file")
+    async with channel.typing():
+        file = open(saveFile+'.txt', 'w+')	 
+        
+        line_offset = []
+        offset = 0
 
-		line_offset = []
-		offset = 0
-
-		for line in file:
-			line_offset.append(offset)
-			offset += len(line)
-		file.seek(0)
-		file.write(filteredTitle[0]+'\n'+'\n')
-		file.write(generatedStory)
-		file.write('\n'+"Generated by Caleb Fontenot\'s madlibs.py")
-		file.close()
-	#Send generated txt file to Discord
-	await channel.send("Sending .txt file...")
-	discordFile = discord.File(saveFile+'.txt', filename="generatedStory.txt")
-	await channel.send(file=discordFile)
-
+        for line in file:
+            line_offset.append(offset)
+            offset += len(line)
+        file.seek(0)
+        file.write(filteredTitle[0]+'\n'+'\n')
+        file.write(generatedStory)
+        file.write('\n'+"Generated by Caleb Fontenot\'s madlibs.py")
+        file.close()
+    #Send generated .txt file to Discord
+    await channel.send("Sending .txt file...")
+    discordFile = discord.File(saveFile+'.txt', filename="generatedStory.txt")
+    await channel.send(file=discordFile)
+    #Send generated .mp3 file to Discord
+    #If file is above 8 MB, upload it to MEGA
+    mp3File = saveFile+'.mp3'
+    def file_size(mp3File):
+        statinfo = os.stat(mp3File)
+        return statinfo.st_size
+    echo("MP3 is "+file_size+" bytes.")
+    await channel.send("MP3 is "+file_size+" bytes."
+    if int(file_size) <= int(8389999):
+        # File is over 8 MiB! This will fail if we send the file corrected for transmission via Discord's voice chat. Let's send the original instead.
+        discordFile = discord.File(badCurrentStory.mp3, filename=saveFile+'.mp3')
+        await channel.send(file=discordFile)
+    discordFile = discord.File(saveFile+'.mp3', filename=saveFile+'.mp3')
+    await channel.send(file=discordFile)
 
 #Setup Discord functions and announce on discord that we are ready
 
 class MyClient(discord.Client):
 
-	async def on_ready(self):
-		print('Logged on as', self.user)
-		channel = client.get_channel(656233549837631508)
-		await channel.send("madlibs.py - Discord Edition has successfully connected!")
-		await channel.send("Run `mad!start` to start a a game")
-		print("Ready!")		
-	async def on_message(self, message, pass_context=True):
-		if message.content == 'mad!start':
-			channel = client.get_channel(656233549837631508)			
-			await gameLoop()
-			await channel.send("Done!")
+    async def on_ready(self):
+        print('Logged on as', self.user)
+        channel = client.get_channel(656233549837631508)
+        await channel.send("madlibs.py - Discord Edition has successfully connected!")
+        if testing == 1:
+            await channel.send("This bot is currently being worked on! Please don't start a game!")
+        await channel.send("Run `mad!start` to start a a game")
+        print("Ready!")		
+    async def on_message(self, message, pass_context=True):
+        if message.content == 'mad!start':
+            channel = client.get_channel(656233549837631508)			
+            await gameLoop()
+            await channel.send("Done!")
+            await voice.disconnect()
+
 #Run main Game loop
 
 # The Discord bot ID isn't stored in this script for security reasons, so we have to go get it
