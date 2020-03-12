@@ -128,7 +128,6 @@ async def gameLoop():
         #print(storyContentList[loopCount])
         storyContentList.insert(x, replaceList[loopCount])
         x = x+2
-    # To get colored words for our output, we need to add the appropiate commands to our variable.
     x = 0
 
     # Merge lists into a string
