@@ -195,6 +195,18 @@ async def gameLoop():
         discordFile = discord.File(saveFile+'.wav', filename=saveFile+'.wav')
         await channel.send(file=discordFile)
 
+async def messageListening():
+    messagesList = []
+    messageAuthorList = []
+    class infinite:
+        while True:
+            x = 0
+            async def on_message(self, message, pass_context=True):
+                messageList.append(message.content)                
+                messageAuthorList.append(message.author)
+                print("Message from", messageAuthorList[x], messagesList[x])
+                x + 1
+    infinite()
 #Setup Discord functions and announce on discord that we are ready
 
 class MyClient(discord.Client):
@@ -212,12 +224,18 @@ class MyClient(discord.Client):
             channel = client.get_channel(656233549837631508)			
             await gameLoop()
             await channel.send("Done!")
-    #Disconnect Voice
+    async def on_message(self, message, pass_context=True):
+        if message.content == 'mad!testMessages':
+            channel = client.get_channel(656233549837631508)
+            await channel.send("Listening to messages, logging time difference...")
+            await messageListening()
+        
+  #Disconnect Voice
             await asyncio.sleep(60)
             voiceChannel = client.get_channel(682688245964079127)
             await voice.disconnect()
-#Run main Game loop
 
+#Run main loop
 # The Discord bot ID isn't stored in this script for security reasons, so we have to go get it
 f = open('botID.txt', 'r')
 BotID = f.read()
