@@ -1,24 +1,31 @@
 #!/usr/bin/python
+#General purpose Discord Bot developed by Caleb Fontenot (CCF_100)
+#Written in python.
 # Toggle me for debugging
 debug = 1
 # Displays warning message
 testing = 1
 # Import the libraries we will use
 #from mega import Mega
+import tracemalloc
+from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from gtts import gTTS
 import discord
+from discord.ext import commands
 import re
 import sys
 import random
 import os
-import asyncio
+import asyncio, threading
 import ffmpeg
 #import talkey
 
-async def gameLoop():
+tracemalloc.start()
+
+async def madlibsLoop():
     # In the future we will detect what channel we were summoned in, but for now:
-    ativeChannel = 656233549837631508
+    activeChannel = 656233549837631508
     #Init tts, and connect voice to channel, reinit connection if broken
     voiceChannel = client.get_channel(682688245964079127)
     voice = await voiceChannel.connect()
@@ -29,7 +36,7 @@ async def gameLoop():
     await client.change_presence(activity=discord.Game(name='madlibs.py'))
     # Introduce yourself
     channel = client.get_channel(656233549837631508)
-    await channel.send("**<<madlibsDiscord.py <:python:656239601723113472> - Written by Caleb Fontenot>>**") 
+    await channel.send("**<<madlibsDiscord.py <:python:656239601723113472> - Written by CCF_100>>**") 
     await channel.send("Initial project started on **July 13, 2019**")
     await channel.send("Discord Bot started on **December 16, 2019**")
     # Notify if verbose
@@ -86,13 +93,6 @@ async def gameLoop():
         print("Times looped: "+str(loopCount))
         #Wait for user to reply
         await channel.send("Give me a(n) "+"**"+str(filtered[loopCount])+"**"+": ")	
-            #if we see our own message, ignore it
-        async def on_message(message):
-            if message.author == self.user:
-                return
-            #if we see a message in a channel that isn't in the active one, ignore it
-            if message.channel.id != activeChannelID:
-                return
         # Push text to gTTS and save it to a file
         tts = gTTS(text="Give me a(n) "+str(filtered[loopCount])+": ")
         os.system("rm badCurrentTTS.mp3")
@@ -110,8 +110,8 @@ async def gameLoop():
             voice.stop()
         print("Attempting to play audio"+'\n')
         voice.play(discord.FFmpegPCMAudio("currentTTS.wav"))
-        raw_message = await client.wait_for('message')
-        replaceVar = raw_message.content
+        message = await self.bot.wait_for('message', check=lambda messages: message.author.id == ctx.author.id and ctx.channel.id == message == ctx.message.id, timeout=30.0)
+        replaceVar = message.content
         print("You gave me: "+replaceVar)
         replaceList.append(replaceVar)
     print(replaceList)
@@ -196,44 +196,75 @@ async def gameLoop():
         await channel.send(file=discordFile)
 
 async def messageListening():
-    messagesList = []
+    global messageslist, messageAuthorList, logMessages
+    print("Now Listening for messages...")
+    messagesList= []
     messageAuthorList = []
-    class infinite:
-        while True:
-            x = 0
-            async def on_message(self, message, pass_context=True):
-                messageList.append(message.content)                
-                messageAuthorList.append(message.author)
-                print("Message from", messageAuthorList[x], messagesList[x])
-                x + 1
-    infinite()
+    print("Loop start!")
+    x = 0
+    while True:
+        async def on_message(message):
+            raw_message = await client.wait_for('message')
+            if logMessages == True:
+                print("Loop Count: "+str(x))
+            messagesList.append(raw_message.content)           
+            messageAuthorList.append(raw_message.author.nick)
+            if logMessages == True:
+                print("Message from "+messageAuthorList[x]+": "+messagesList[x])
+            x += 1
+        #await client.process_commands(message)
 #Setup Discord functions and announce on discord that we are ready
 
-class MyClient(discord.Client):
-
+class MyClient(discord.Client):  
     async def on_ready(self):
+        #print(loop)
         print('Logged on as', self.user)
         channel = client.get_channel(656233549837631508)
-        await channel.send("madlibs.py - Discord Edition has successfully connected!")
+        await channel.send("(Yet to be named) Discord bot, successfully connected!")
+        await channel.send("Developed by CCF_100")
         if testing == 1:
             await channel.send("This bot is currently being worked on! Please don't start a game!")
-        await channel.send("Run `mad!start` to start a a game")
+        await channel.send("Run `mad!madlibs` to start madlibs")
         print("Ready!")		
-    async def on_message(self, message, pass_context=True):
-        if message.content == 'mad!start':
-            channel = client.get_channel(656233549837631508)			
-            await gameLoop()
-            await channel.send("Done!")
-    async def on_message(self, message, pass_context=True):
-        if message.content == 'mad!testMessages':
-            channel = client.get_channel(656233549837631508)
-            await channel.send("Listening to messages, logging time difference...")
-            await messageListening()
         
+    async def on_message(self, message, pass_context=True):
+        if message.content == 'mad!madlibs':
+            channel = client.get_channel(656233549837631508)		
+            await madlibsLoop()
+            await channel.send("Done!")
+    #Turn on message logging
+    async def on_message(self, message, pass_context=True):
+        if message.content == 'mad!logMessagesOn':
+            pass
+            if message.author.id == 294976590658666497:
+                channel = client.get_channel(656233549837631508)
+                await channel.send("Logging messages to console.")
+                global logMessages
+                logMessages = True
+            else:
+                channel = client.get_channel(656233549837631508)
+                await channel.send("You are not authorized to use this command! Only @CCF_100#1050 may use this command!")
+    #Turn off message logging
+    async def on_message(self, message, pass_context=True):
+        if message.content == 'mad!logMessagesOff':
+            pass
+            if message.author.id == 294976590658666497:
+                channel = client.get_channel(656233549837631508)
+                await channel.send("Stopping message logging!")
+                global logMessages
+                logMessages = False
+            else:
+                channel = client.get_channel(656233549837631508)
+                await channel.send("You are not authorized to use this command! Only @CCF_100#1050 may use this command!")
+#Calls message listening function.
+    logMessages = False
+    loop = asyncio.get_event_loop()
+    asyncio.create_task(messageListening())
+    print("lol3214")
   #Disconnect Voice
-            await asyncio.sleep(60)
-            voiceChannel = client.get_channel(682688245964079127)
-            await voice.disconnect()
+            #await asyncio.sleep(60)
+            #voiceChannel = client.get_channel(682688245964079127)
+            #await voice.disconnect()
 
 #Run main loop
 # The Discord bot ID isn't stored in this script for security reasons, so we have to go get it
@@ -243,6 +274,7 @@ BotID = f.read()
 #os.system("rm badCurrentTTS.mp3")
 #os.system("rm currentTTS.wav")
 # Connect Bot To Discord and start running
+
 client = MyClient()
 client.run(BotID)
 exit()
