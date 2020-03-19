@@ -8,7 +8,7 @@ testing = 1
 # Import the libraries we will use
 #from mega import Mega
 import tracemalloc
-from concurrent.futures import ProcessPoolExecutor
+#from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from gtts import gTTS
 import discord
@@ -17,7 +17,8 @@ import re
 import sys
 import random
 import os
-import asyncio, threading
+import asyncio
+from threading import Thread
 import ffmpeg
 #import talkey
 
@@ -110,7 +111,8 @@ async def madlibsLoop():
             voice.stop()
         print("Attempting to play audio"+'\n')
         voice.play(discord.FFmpegPCMAudio("currentTTS.wav"))
-        message = await self.bot.wait_for('message', check=lambda messages: message.author.id == ctx.author.id and ctx.channel.id == message == ctx.message.id, timeout=30.0)
+        message = await client.wait_for('message')
+        # , check=lambda messages: message.author.id == ctx.author.id and ctx.channel.id == message == ctx.message.id, timeout=30.0
         replaceVar = message.content
         print("You gave me: "+replaceVar)
         replaceList.append(replaceVar)
@@ -194,24 +196,6 @@ async def madlibsLoop():
     else:
         discordFile = discord.File(saveFile+'.wav', filename=saveFile+'.wav')
         await channel.send(file=discordFile)
-
-async def messageListening():
-    global messageslist, messageAuthorList, logMessages
-    print("Now Listening for messages...")
-    messagesList= []
-    messageAuthorList = []
-    print("Loop start!")
-    x = 0
-    while True:
-        async def on_message(message):
-            raw_message = await client.wait_for('message')
-            if logMessages == True:
-                print("Loop Count: "+str(x))
-            messagesList.append(raw_message.content)           
-            messageAuthorList.append(raw_message.author.nick)
-            if logMessages == True:
-                print("Message from "+messageAuthorList[x]+": "+messagesList[x])
-            x += 1
         #await client.process_commands(message)
 #Setup Discord functions and announce on discord that we are ready
 
@@ -229,10 +213,12 @@ class MyClient(discord.Client):
         
     async def on_message(self, message, pass_context=True):
         if message.content == 'mad!madlibs':
+            print("lol")
             channel = client.get_channel(656233549837631508)		
             await madlibsLoop()
             await channel.send("Done!")
     #Turn on message logging
+""" 
     async def on_message(self, message, pass_context=True):
         if message.content == 'mad!logMessagesOn':
             pass
@@ -256,11 +242,32 @@ class MyClient(discord.Client):
             else:
                 channel = client.get_channel(656233549837631508)
                 await channel.send("You are not authorized to use this command! Only @CCF_100#1050 may use this command!")
+"""
 #Calls message listening function.
-    logMessages = False
-    loop = asyncio.get_event_loop()
-    asyncio.create_task(messageListening())
-    print("lol3214")
+    #logMessages = False
+    #async def messageListening():
+        #global messageslist, messageAuthorList, logMessages
+        #print("Now Listening for messages...")
+        #messagesList= []
+        #messageAuthorList = []
+        #print("Loop start!")
+        #x = 0
+        #while True:
+            #async def on_message(message):
+                #raw_message = await client.wait_for('message')
+                #if logMessages == True:
+                    #print("Loop Count: "+str(x))
+                #messagesList.append(raw_message.content)           
+                #messageAuthorList.append(raw_message.author.nick)
+                #if logMessages == True:
+                    #print("Message from "+messageAuthorList[x]+": "+messagesList[x])
+                #x += 1
+    #Start messageListening in a new thread to prevent it from stalling the rest of the script
+    #def startMessageListening():
+        #asyncio.set_event_loop(loop)
+        #loop.run_forever() new_loop = asyncio.new_event_loop()
+    #t = Thread(target=startMessageListening, args=(new_loop,))
+    #t.start()
   #Disconnect Voice
             #await asyncio.sleep(60)
             #voiceChannel = client.get_channel(682688245964079127)
