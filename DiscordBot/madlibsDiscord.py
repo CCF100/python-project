@@ -21,7 +21,7 @@ import asyncio
 from threading import Thread
 import ffmpeg
 #import talkey
-
+prefix = 'mad!'
 tracemalloc.start()
 
 async def madlibsLoop():
@@ -44,15 +44,6 @@ async def madlibsLoop():
     if debug == 1:
         await channel.send("Debug mode is enabled! Being verbose!")
     # Now on to business!
-    # Load files
-    async with channel.typing():	
-        f = open('storyCount.txt', 'r')
-        StoryCount = f.read()
-        IntStoryCount = int(StoryCount)
-        await channel.send("Detected "+str(IntStoryCount)+" stories")
-    # Randomly pick what story we will use
-    story = random.randint(1, IntStoryCount)
-    
     #Declare vars
     storyContentStr = []
     storyNameStr = []
@@ -68,6 +59,14 @@ async def madlibsLoop():
             storyNameStr.append(storyName)
         i+=1
     f.close()
+    # Load files
+    async with channel.typing():	
+        #Count the number of lines in storyName, we use this to determine what story to use
+        print(storyName)
+        IntStoryCount = len(storyNameStr)
+        await channel.send("Detected "+str(IntStoryCount)+" stories")
+    # Randomly pick what story we will use
+    story = random.randint(1, IntStoryCount)
     await channel.send(storyNameStr)
     # Print current story title, but remove the brackets first
     filteredTitle = re.findall(r'<(.*?)>', storyNameStr[story-1])
@@ -111,7 +110,7 @@ async def madlibsLoop():
             voice.stop()
         print("Attempting to play audio"+'\n')
         voice.play(discord.FFmpegPCMAudio("currentTTS.wav"))
-        message = await client.wait_for('message')
+        message = await client.wait_for('message', check=lambda message: message.channel.id == activeChannel)
         # , check=lambda messages: message.author.id == ctx.author.id and ctx.channel.id == message == ctx.message.id, timeout=30.0
         replaceVar = message.content
         print("You gave me: "+replaceVar)
@@ -201,6 +200,7 @@ async def madlibsLoop():
 
 class MyClient(discord.Client):  
     async def on_ready(self):
+        global prefix
         #print(loop)
         print('Logged on as', self.user)
         channel = client.get_channel(656233549837631508)
@@ -217,6 +217,17 @@ class MyClient(discord.Client):
             channel = client.get_channel(656233549837631508)		
             await madlibsLoop()
             await channel.send("Done!")
+"""
+    async def on_message(self, message, pass_context=True):
+        global prefix
+        if message.content == prefix+'cough':
+            voiceChannel = client.get_channel(690301271382556823)
+            voice = await voiceChannel.connect()
+            if voice.is_connected() == True:
+                await voice.disconnect()
+            voice = await voiceChannel.connect()
+            voice.play(discord.FFmpegPCMAudio("coughing.wav"))
+"""
     #Turn on message logging
 """ 
     async def on_message(self, message, pass_context=True):
@@ -281,7 +292,6 @@ BotID = f.read()
 #os.system("rm badCurrentTTS.mp3")
 #os.system("rm currentTTS.wav")
 # Connect Bot To Discord and start running
-
 client = MyClient()
 client.run(BotID)
 exit()
